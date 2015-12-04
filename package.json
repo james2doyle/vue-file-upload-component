@@ -1,0 +1,30 @@
+{
+  "name": "nudeproject",
+  "version": "1.0.0",
+  "description": "a nudeproject",
+  "homepage": "http://ohdoylerules.com",
+  "repository": "https://github.com/james2doyle/nudeproject",
+  "author": [
+    {
+      "name": "WARPAINT Media",
+      "email": "hello@warpaintmedia.ca",
+      "url": "http://warpaintmedia.ca"
+    },
+    {
+      "name": "James Doyle",
+      "email": "james2doyle@gmail.com",
+      "url": "http://ohdoylerules.com/"
+    }
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    }
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-livereload": "^3.8.1"
+  }
+}
