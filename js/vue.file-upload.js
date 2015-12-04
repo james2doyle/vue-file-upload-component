@@ -2,11 +2,10 @@
 // define
 var FileUploadComponent = Vue.extend({
   template: '#file-upload',
-  twoWay: true,
   props: ['name', 'action', 'accept', 'multiple'],
   data: function() {
     return {
-      myFiles: []
+      myFiles: [] // a container for the files in our field
     };
   },
   methods: {
@@ -68,6 +67,7 @@ var FileUploadComponent = Vue.extend({
 
         xhr.open('POST', this.action, true);
         xhr.send(form);
+        this.$dispatch('afterFileUpload', file);
       }.bind(this));
     },
     fileUpload: function() {

@@ -19,7 +19,12 @@ var App = new Vue({
       this.allFilesUploaded = false;
     },
     beforeFileUpload: function(file) {
+      // called when the upload handler is called
       console.log('beforeFileUpload', file);
+    },
+    afterFileUpload: function(file) {
+      // called after the xhr.send() at the end of the upload handler
+      console.log('afterFileUpload', file);
     },
     onFileProgress: function(progress) {
       console.log('onFileProgress', progress);
