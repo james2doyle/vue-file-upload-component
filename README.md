@@ -4,6 +4,10 @@ A simple file upload component for Vue.js. Emits events for XHR Upload Progress 
 
 I came up with the original idea when looking at [this repo](https://github.com/tj/s3.js). I knew I wanted a nice component with upload progress and so I copied some code from that library.
 
+### Install
+
+Available through npm as `vue-file-upload-component`. Or include as an inline script, like in `example.html`.
+
 ### Demo
 
 ![](http://cl.ly/image/3k2M2I0f4417/Screen%20Recording%202015-12-04%20at%2008.58%20AM.gif)

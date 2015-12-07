@@ -1,8 +1,8 @@
 /* globals FormData, Promise, Vue */
 // define
 var FileUploadComponent = Vue.extend({
-  template: '#file-upload',
-  props: ['name', 'action', 'accept', 'multiple'],
+  template: '<div class="{{ class }}"><input type="file" name="{{ name }}" id="{{ name }}" accept="{{ accept }}" v-on:click="fileInputClick" v-on:change="fileInputChange" multiple="{{ multiple }}"><button type="button" v-on:click="fileUpload">Upload</button></div>',
+  props: ['class', 'name', 'action', 'accept', 'multiple'],
   data: function() {
     return {
       myFiles: [] // a container for the files in our field
