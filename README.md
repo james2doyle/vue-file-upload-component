@@ -14,6 +14,22 @@ Available through npm as `vue-file-upload-component`. Or include as an inline sc
 
 In order to use the demo, you need to have PHP setup and this project running under a server. There is a script in the root called `upload.php`, which is a simple script to handle single file uploads. Most likely you will have your own way of handling files.
 
+### Setting Headers
+
+You can set headers for the submission by using the attribute `v-bind:headers="xhrHeaders"`. `xhrHeaders` may look something like this:
+
+```json
+// ... Vue stuff above
+data: {
+  xhrHeaders: {
+    "X-CSRF-TOKEN": "32charactersOfRandomStringNoise!"
+  }
+},
+// ... more stuff below
+```
+
+You can set many headers in the object.
+
 ### Caveats
 
 This upload script only uploads 1 file at a time. The upload handler uses `Promises` internally to know when all the files are uploaded.

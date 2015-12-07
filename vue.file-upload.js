@@ -4,7 +4,6 @@ var FileUploadComponent = Vue.extend({
   template: '<div class="{{ class }}"><input type="file" name="{{ name }}" id="{{ name }}" accept="{{ accept }}" v-on:click="fileInputClick" v-on:change="fileInputChange" multiple="{{ multiple }}"><button type="button" v-on:click="fileUpload">Upload</button></div>',
   props: {
     class: String,
-    // a required string
     name: {
       type: String,
       required: true
@@ -14,7 +13,8 @@ var FileUploadComponent = Vue.extend({
       required: true
     },
     accept: String,
-    multiple: String
+    multiple: String,
+    headers: Object
   },
   data: function() {
     return {
@@ -79,6 +79,11 @@ var FileUploadComponent = Vue.extend({
         }.bind(this);
 
         xhr.open('POST', this.action, true);
+        if (this.headers) {
+          for(var header in this.headers) {
+            xhr.setRequestHeader(header, this.headers[header]);
+          }
+        }
         xhr.send(form);
         this.$dispatch('afterFileUpload', file);
       }.bind(this));
