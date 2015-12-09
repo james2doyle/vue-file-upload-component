@@ -25,9 +25,9 @@
     <div class="progress-bar" style="width: {{ fileProgress }}%" v-show="fileProgress > 0" ></div>
     <!-- message for all uploads completing -->
     <p v-if="allFilesUploaded"><strong>All Files Uploaded</strong></p>
-    <!-- multiple files usage -->
-    <file-upload class="my-file-uploader" name="myFile" action="upload.php" multiple></file-upload>
-    <!-- usage for single files -->
+    <!-- full usage example -->
+    <file-upload class="my-file-uploader" name="myFile" id="myCustomId" action="upload.php" multiple>Inside Slot Text</file-upload>
+    <!-- minimal usage -->
     <file-upload name="anotherFile" action="upload.php"></file-upload>
   </div>
   <script src="http://cdn.jsdelivr.net/vue/1.0.10/vue.min.js"></script>

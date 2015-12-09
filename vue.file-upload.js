@@ -1,13 +1,14 @@
 /* globals FormData, Promise, Vue */
 // define
 var FileUploadComponent = Vue.extend({
-  template: '<div class="{{ class }}"><input type="file" name="{{ name }}" id="{{ name }}" accept="{{ accept }}" v-on:click="fileInputClick" v-on:change="fileInputChange" multiple="{{ multiple }}"><button type="button" v-on:click="fileUpload">Upload</button></div>',
+  template: '<div class="{{ class }}"><label for="{{ name }}"><input type="file" name="{{ name }}" id="{{ id || name }}" accept="{{ accept }}" v-on:click="fileInputClick" v-on:change="fileInputChange" multiple="{{ multiple }}"><slot></slot></label><button type="button" v-on:click="fileUpload">Upload</button></div>',
   props: {
     class: String,
     name: {
       type: String,
       required: true
     },
+    id: String,
     action: {
       type: String,
       required: true
@@ -28,7 +29,8 @@ var FileUploadComponent = Vue.extend({
     },
     fileInputChange: function() {
       // get the group of files assigned to this field
-      this.myFiles = document.getElementById(this.name).files;
+      var ident = this.id || this.name
+      this.myFiles = document.getElementById(ident).files;
       this.$dispatch('onFileChange', this.myFiles);
     },
     _onProgress: function(e) {
