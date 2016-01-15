@@ -64,7 +64,7 @@ var FileUploadComponent = Vue.extend({
             this.$dispatch('onFileUpload', file, res);
             resolve(file);
           } else {
-            var err = new Error(xhr.responseText);
+            var err = JSON.parse(xhr.responseText);
             err.status = xhr.status;
             err.statusText = xhr.statusText;
             this.$dispatch('onFileError', file, err);
@@ -73,7 +73,7 @@ var FileUploadComponent = Vue.extend({
         }.bind(this);
 
         xhr.onerror = function() {
-          var err = new Error(xhr.responseText);
+          var err = JSON.parse(xhr.responseText);
           err.status = xhr.status;
           err.statusText = xhr.statusText;
           this.$dispatch('onFileError', file, err);
