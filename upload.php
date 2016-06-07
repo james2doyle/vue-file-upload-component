@@ -31,6 +31,9 @@ function json_response($code = 200, $message = null)
 // this function is very simple
 // it just uploads a single file with a timestamp prepended
 $target_dir = "uploads/";
+if(!file_exists($target_dir)){
+    mkdir($target_dir);
+}
 $target_file = $target_dir . time() . basename($_FILES["file"]["name"]);
 if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
     echo json_response(200, "The file ". basename( $_FILES["file"]["name"]). " has been uploaded.");

@@ -15,7 +15,8 @@ var FileUploadComponent = Vue.extend({
     },
     accept: String,
     multiple: String,
-    headers: Object
+    headers: Object,
+    method: String
   },
   data: function() {
     return {
@@ -80,7 +81,7 @@ var FileUploadComponent = Vue.extend({
           reject(err);
         }.bind(this);
 
-        xhr.open('POST', this.action, true);
+        xhr.open(this.method || "POST", this.action, true);
         if (this.headers) {
           for(var header in this.headers) {
             xhr.setRequestHeader(header, this.headers[header]);
