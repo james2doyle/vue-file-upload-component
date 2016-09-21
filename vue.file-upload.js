@@ -1,7 +1,7 @@
 /* globals FormData, Promise, Vue */
 // define
 var FileUploadComponent = Vue.extend({
-  template: '<div class="{{ class }}"><label for="{{ name }}"><input type="file" name="{{ name }}" id="{{ id || name }}" accept="{{ accept }}" v-on:click="fileInputClick" v-on:change="fileInputChange" multiple="{{ multiple }}"><slot></slot></label><button type="button" v-on:click="fileUpload">Upload</button></div>',
+  template: '<div class="{{ class }}"><label for="{{ name }}"><input type="file" name="{{ name }}" id="{{ id || name }}" accept="{{ accept }}" v-on:click="fileInputClick" v-on:change="fileInputChange" multiple="{{ multiple }}"><slot></slot></label><button type="button" v-on:click="fileUpload">{{ buttonText }}</button></div>',
   props: {
     class: String,
     name: {
@@ -16,7 +16,11 @@ var FileUploadComponent = Vue.extend({
     accept: String,
     multiple: String,
     headers: Object,
-    method: String
+    method: String,
+    buttonText: {
+      type: String,
+      default: 'Upload'
+    }
   },
   data: function() {
     return {
