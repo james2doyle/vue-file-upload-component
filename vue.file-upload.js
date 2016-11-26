@@ -34,6 +34,24 @@ var FileUploadComponent = Vue.extend({
       this.myFiles = document.getElementById(ident).files;
       this.$dispatch('onFileChange', this.myFiles);
     },
+    fileUpload: function() {
+      if(this.myFiles.length > 0) {
+        // a hack to push all the Promises into a new array
+        var arrayOfPromises = Array.prototype.slice.call(this.myFiles, 0).map(function(file) {
+          return this._handleUpload(file);
+        }.bind(this));
+        // wait for everything to finish
+        Promise.all(arrayOfPromises).then(function(allFiles) {
+          this.$dispatch('onAllFilesUploaded', allFiles);
+        }.bind(this)).catch(function(err) {
+          this.$dispatch('onFileError', this.myFiles, err);
+        }.bind(this));
+      } else {
+        // someone tried to upload without adding files
+        var err = new Error("No files to upload for this field");
+        this.$dispatch('onFileError', this.myFiles, err);
+      }
+    },
     _onProgress: function(e) {
       // this is an internal call in XHR to update the progress
       e.percent = (e.loaded / e.total) * 100;
@@ -61,22 +79,18 @@ var FileUploadComponent = Vue.extend({
             return;
           }
           if (xhr.status < 400) {
-            var res = JSON.parse(xhr.responseText);
+            var res = this._parseResponse(xhr);
             this.$dispatch('onFileUpload', file, res);
             resolve(file);
           } else {
-            var err = JSON.parse(xhr.responseText);
-            err.status = xhr.status;
-            err.statusText = xhr.statusText;
+            var err = this._parseResponse(xhr);
             this.$dispatch('onFileError', file, err);
             reject(err);
           }
         }.bind(this);
 
         xhr.onerror = function() {
-          var err = JSON.parse(xhr.responseText);
-          err.status = xhr.status;
-          err.statusText = xhr.statusText;
+          var err = this._parseResponse(xhr);
           this.$dispatch('onFileError', file, err);
           reject(err);
         }.bind(this);
@@ -91,23 +105,16 @@ var FileUploadComponent = Vue.extend({
         this.$dispatch('afterFileUpload', file);
       }.bind(this));
     },
-    fileUpload: function() {
-      if(this.myFiles.length > 0) {
-        // a hack to push all the Promises into a new array
-        var arrayOfPromises = Array.prototype.slice.call(this.myFiles, 0).map(function(file) {
-          return this._handleUpload(file);
-        }.bind(this));
-        // wait for everything to finish
-        Promise.all(arrayOfPromises).then(function(allFiles) {
-          this.$dispatch('onAllFilesUploaded', allFiles);
-        }.bind(this)).catch(function(err) {
-          this.$dispatch('onFileError', this.myFiles, err);
-        }.bind(this));
-      } else {
-        // someone tried to upload without adding files
-        var err = new Error("No files to upload for this field");
-        this.$dispatch('onFileError', this.myFiles, err);
+    _parseResponse(xhr) {
+      var resp;
+      try {
+        resp = JSON.parse(xhr.responseText);
+      } catch (e) {
+        resp = { responseText: xhr.responseText };
       }
+      resp.status = xhr.status;
+      resp.statusText = xhr.statusText;
+      return resp;
     }
   }
 });
