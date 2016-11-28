@@ -105,7 +105,7 @@ var FileUploadComponent = Vue.extend({
         this.$dispatch('afterFileUpload', file);
       }.bind(this));
     },
-    _parseResponse(xhr) {
+    _parseResponse: function(xhr) {
       var resp;
       try {
         resp = JSON.parse(xhr.responseText);
