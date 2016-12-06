@@ -38,63 +38,6 @@ var FileUploadComponent = Vue.extend({
       this.myFiles = document.getElementById(ident).files;
       this.$dispatch('onFileChange', this.myFiles);
     },
-    _onProgress: function(e) {
-      // this is an internal call in XHR to update the progress
-      e.percent = (e.loaded / e.total) * 100;
-      this.$dispatch('onFileProgress', e);
-    },
-    _handleUpload: function(file) {
-      this.$dispatch('beforeFileUpload', file);
-      var form = new FormData();
-      var xhr = new XMLHttpRequest();
-      try {
-        form.append('Content-Type', file.type || 'application/octet-stream');
-        // our request will have the file in the ['file'] key
-        form.append('file', file);
-      } catch (err) {
-        this.$dispatch('onFileError', file, err);
-        return;
-      }
-
-      return new Promise(function(resolve, reject) {
-
-        xhr.upload.addEventListener('progress', this._onProgress, false);
-
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState < 4) {
-            return;
-          }
-          if (xhr.status < 400) {
-            var res = JSON.parse(xhr.responseText);
-            this.$dispatch('onFileUpload', file, res);
-            resolve(file);
-          } else {
-            var err = JSON.parse(xhr.responseText);
-            err.status = xhr.status;
-            err.statusText = xhr.statusText;
-            this.$dispatch('onFileError', file, err);
-            reject(err);
-          }
-        }.bind(this);
-
-        xhr.onerror = function() {
-          var err = JSON.parse(xhr.responseText);
-          err.status = xhr.status;
-          err.statusText = xhr.statusText;
-          this.$dispatch('onFileError', file, err);
-          reject(err);
-        }.bind(this);
-
-        xhr.open(this.method || "POST", this.action, true);
-        if (this.headers) {
-          for(var header in this.headers) {
-            xhr.setRequestHeader(header, this.headers[header]);
-          }
-        }
-        xhr.send(form);
-        this.$dispatch('afterFileUpload', file);
-      }.bind(this));
-    },
     fileUpload: function() {
       if(this.myFiles.length > 0) {
         // a hack to push all the Promises into a new array
@@ -112,6 +55,60 @@ var FileUploadComponent = Vue.extend({
         var err = new Error("No files to upload for this field");
         this.$dispatch('onFileError', this.myFiles, err);
       }
+    },
+    _onProgress: function(e) {
+      // this is an internal call in XHR to update the progress
+      e.percent = (e.loaded / e.total) * 100;
+      this.$dispatch('onFileProgress', e);
+    },
+    _handleUpload: function(file) {
+      this.$dispatch('beforeFileUpload', file);
+      var xhr = new XMLHttpRequest();
+      return new Promise(function(resolve, reject) {
+
+        xhr.upload.addEventListener('progress', this._onProgress, false);
+
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState < 4) {
+            return;
+          }
+          if (xhr.status < 400) {
+            var res = this._parseResponse(xhr);
+            this.$dispatch('onFileUpload', file, res);
+            resolve(file);
+          } else {
+            var err = this._parseResponse(xhr);
+            this.$dispatch('onFileError', file, err);
+            reject(err);
+          }
+        }.bind(this);
+
+        xhr.onerror = function() {
+          var err = this._parseResponse(xhr);
+          this.$dispatch('onFileError', file, err);
+          reject(err);
+        }.bind(this);
+
+        xhr.open(this.method || "POST", this.action, true);
+        if (this.headers) {
+          for(var header in this.headers) {
+            xhr.setRequestHeader(header, this.headers[header]);
+          }
+        }
+        xhr.send(file);
+        this.$dispatch('afterFileUpload', file);
+      }.bind(this));
+    },
+    _parseResponse: function(xhr) {
+      var resp;
+      try {
+        resp = JSON.parse(xhr.responseText);
+      } catch (e) {
+        resp = { responseText: xhr.responseText };
+      }
+      resp.status = xhr.status;
+      resp.statusText = xhr.statusText;
+      return resp;
     }
   }
 });
