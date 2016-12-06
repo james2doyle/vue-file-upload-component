@@ -1,7 +1,11 @@
 /* globals FormData, Promise, Vue */
 // define
 var FileUploadComponent = Vue.extend({
-  template: '<div class="{{ class }}"><label for="{{ name }}"><input type="file" name="{{ name }}" id="{{ id || name }}" accept="{{ accept }}" v-on:click="fileInputClick" v-on:change="fileInputChange" multiple="{{ multiple }}"><slot></slot></label><button type="button" v-on:click="fileUpload">Upload</button></div>',
+  computed: {
+    idOrName: function(){ return this.id || this.name; },
+    className: function(){ return this.class; }
+  },
+  template: '<div :class="className"><label :for="name"><input type="file" :name="name" :id="idOrName" :accept="accept" @click="fileInputClick" @change="fileInputChange" :multiple="multiple"><slot></slot></label><button type="button" @click="fileUpload">Upload</button></div>',
   props: {
     class: String,
     name: {
