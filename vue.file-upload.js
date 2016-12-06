@@ -59,17 +59,7 @@ var FileUploadComponent = Vue.extend({
     },
     _handleUpload: function(file) {
       this.$dispatch('beforeFileUpload', file);
-      var form = new FormData();
       var xhr = new XMLHttpRequest();
-      try {
-        form.append('Content-Type', file.type || 'application/octet-stream');
-        // our request will have the file in the ['file'] key
-        form.append('file', file);
-      } catch (err) {
-        this.$dispatch('onFileError', file, err);
-        return;
-      }
-
       return new Promise(function(resolve, reject) {
 
         xhr.upload.addEventListener('progress', this._onProgress, false);
@@ -101,7 +91,7 @@ var FileUploadComponent = Vue.extend({
             xhr.setRequestHeader(header, this.headers[header]);
           }
         }
-        xhr.send(form);
+        xhr.send(file);
         this.$dispatch('afterFileUpload', file);
       }.bind(this));
     },
